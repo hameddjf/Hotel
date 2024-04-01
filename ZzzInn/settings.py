@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'user',
+    'hotel_management.apps.HotelManagementConfig'
 ]
 
 MIDDLEWARE = [
