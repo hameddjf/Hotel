@@ -20,6 +20,7 @@ def search(request):
         query = request.GET['query']
         rooms = Room.Available.filter(Q(name__icontains=query) | Q(description__icontains=query))
     return render(request, 'hotel/search.html', {'rooms': rooms})
+    
 
 
 def room_reserve(request):
