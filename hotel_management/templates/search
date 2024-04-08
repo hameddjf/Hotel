@@ -1,0 +1,11 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    {% for room in rooms %}
+        <a href="{% url 'hotel:room_detail' room.id%}">{{ room.name }}<a/>
+    {% endfor %}
+</body>
+</html>
