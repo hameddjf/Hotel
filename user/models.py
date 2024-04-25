@@ -37,7 +37,6 @@ class CustomUserManager(BaseUserManager):
             password=password,
         )
         # giving permission to super user
-        user.is_admin = True
         user.is_active = True
         user.is_staff = True
         user.is_superadmin = True
