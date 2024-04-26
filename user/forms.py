@@ -14,7 +14,7 @@ class UserRegistrationForm(UserCreationForm):
         fields = ('full_name', 'email', 'phone_number',
                   'password1', 'password2')
         help_texts = {
-            'email': None,  # اینجا می‌توانید پیام‌های راهنمای اضافی اضافه کنید
+            'email': None,
         }
 
     def clean_email(self):
@@ -49,7 +49,6 @@ class UserProfileForm(forms.ModelForm):
 
     def clean_email(self):
         email = self.cleaned_data['email'].lower()
-        # اطمینان حاصل کنید که کاربر فعلی می‌تواند ایمیل خود را حفظ کند
         if User.objects.filter(email=email).exclude(
                 id=self.instance.id).exists():
             raise forms.ValidationError(
@@ -58,7 +57,6 @@ class UserProfileForm(forms.ModelForm):
 
     def clean_phone_number(self):
         phone_number = self.cleaned_data['phone_number']
-        # اطمینان حاصل کنید که کاربر فعلی می‌تواند شماره تلفن خود را حفظ کند
         if User.objects.filter(phone_number=phone_number).exclude(
                 id=self.instance.id).exists():
             raise forms.ValidationError(
