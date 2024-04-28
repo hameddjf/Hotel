@@ -1,0 +1,14 @@
+FROM node:21-alpine
+
+WORKDIR /ZzzInn
+
+# ن کل پروژه Sass کپی فقط فایل‌های مربوط به 
+COPY package*.json ./
+
+RUN npm install && \
+    npm run compile:sass
+
+EXPOSE 3000
+
+# دستور برای اجرای اپلیکیشن
+CMD ["npm", "start"]
