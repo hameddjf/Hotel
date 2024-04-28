@@ -1,9 +1,13 @@
 FROM python:3.12.3-alpine3.19
+# تعریف متغیرهای محیطی
 LABEL maintainer='hameddjf33@gmail.com'
 ENV PYTHONUNBUFFERED 1
+
 COPY ./requirements.txt /tmp/requirements.txt
 COPY ./ZzzInn /ZzzInn
+# تعیین پوشه کاری داخل ایمیج
 WORKDIR /ZzzInn
+# اعلام پورت
 EXPOSE 8000
 
 RUN python -m venv /py && \
