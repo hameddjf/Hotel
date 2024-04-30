@@ -3,10 +3,10 @@ FROM node:21-alpine
 WORKDIR /ZzzInn
 
 # ن کل پروژه Sass کپی فقط فایل‌های مربوط به 
-COPY package*.json ./
+# COPY package*.json ./
 
-RUN npm install && \
-    npm run compile:sass
+# RUN npm install && \
+#     npm run compile:sass
 
 EXPOSE 3000
 ARG DEV=false
