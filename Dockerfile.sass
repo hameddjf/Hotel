@@ -9,6 +9,6 @@ RUN npm install && \
     npm run compile:sass
 
 EXPOSE 3000
-
+ARG DEV=false
 # دستور برای اجرای اپلیکیشن
 CMD ["npm", "start"]

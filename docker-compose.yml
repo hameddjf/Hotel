@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  django:
+    build:
+      context: .
+      args:
+        - DEV=true
+      dockerfile: Dockerfile.django 
+    volumes:
+      - ./ZzzInn:/ZzzInn
+    ports:
+      - "8000:8000" 
+    environment:
+      - PYTHONUNBUFFERED=1
+    command: >
+        sh -c "python manage.py migrate &&
+              python manage.py runserver 0.0.0.0:8000"
+
+
+  sass:
+    build:
+      context: .
+      args:
+        - DEV=true
+      dockerfile: Dockerfile.sass 
+    volumes:
+      - ./ZzzInn:/ZzzInn 
+    ports:
+      - "3000:3000" 
