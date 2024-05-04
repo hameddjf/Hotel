@@ -3,7 +3,7 @@ from rest_framework.authtoken.models import Token
 
 from django.contrib.auth import authenticate
 
-from .models import User
+from .models import User, Customer
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -70,3 +70,43 @@ class AuthTokenSerializer(serializers.Serializer):
 
         attrs['user'] = user
         return attrs
+
+
+class CustomerSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+
+    class Meta:
+        model = Customer
+        fields = ['user', 'address', 'city', 'country',
+                  'check_in', 'check_out', 'guests_number',
+                  'national_code', 'loyalty_points', 'preferences',
+                  'satisfaction_level', 'special_requests',
+                  'reservation_status', 'payment_status',
+                  'room_number', 'vip_status']
+        depth = 1  # این گزینه برای نمایش جزییات ارتباطی استفاده می‌شود
+
+    def create(self, validated_data):
+        user_data = validated_data.pop('user')
+        user = UserSerializer.create(
+            UserSerializer(), validated_data=user_data)
+        customer = Customer.objects.create(user=user, **validated_data)
+        return customer
+
+    def update(self, instance, validated_data):
+        user_data = validated_data.pop('user')
+        user = instance.user
+
+        user.email = user_data.get('email', user.email)
+        user.full_name = user_data.get('full_name', user.full_name)
+        # برای به روز رسانی رمز عبور، باید از روش set_password استفاده کنیم
+        password = user_data.get('password')
+        if password:
+            user.set_password(password)
+        user.save()
+
+        # به روز رسانی سایر فیلدهای مشتری
+        instance.address = validated_data.get('address', instance.address)
+        # به همین شکل سایر فیلدها را به روز کنید
+        instance.save()
+
+        return instance
