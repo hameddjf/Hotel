@@ -133,10 +133,18 @@ STATIC_ROOT = '/vol/web/static'
 
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ],
 }
 
 SPECTACULAR_SETTINGS = {
     'COMPONENT_SPLIT_REQUEST': True,
+    'SECURITY': [
+        {'tokenAuth': []},
+        {'cookieAuth': []},
+    ],
 }
 
 # Default primary key field type

@@ -1,14 +1,17 @@
-from rest_framework import generics, permissions, status
+from rest_framework import generics, permissions, status, viewsets
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
 
-from .models import User
+from django.http import Http404
+
+from .models import User, HotelStaff, HotelAdmin, Customer
 from .serializers import (
     AuthTokenSerializer,
     UserSerializer,
-    CustomerSerializer)
+    CustomerSerializer,
+    HotelStaffSerializer,
+    HotelAdminSerializer)
 
 # Create your views here.
 
@@ -19,7 +22,7 @@ class UserCreateAPIView(generics.CreateAPIView):
     permission_classes = [permissions.AllowAny]
 
     def perform_create(self, serializer):
-        user = serializer.save()
+        # user = serializer.save()
         token = serializer.validated_data['token']
         headers = self.get_success_headers(serializer.data)
         return Response({'token': token.key},
@@ -56,8 +59,54 @@ class ObtainAuthTokenAPIView(APIView):
 
 
 class CustomerUserView(generics.RetrieveUpdateAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
     serializer_class = CustomerSerializer
 
     def get_object(self):
-        return self.request.user.customer
+        try:
+            return self.request.user.customer
+        except Customer.DoesNotExist:
+            raise Http404("مشتری یافت نشد")
+
+    def get(self, request, *args, **kwargs):
+        return super(CustomerUserView, self).get(request, *args, **kwargs)
+
+    def patch(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(
+            instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        if getattr(instance, '_prefetched_objects_cache', None):
+            instance._prefetched_objects_cache = {}
+
+        return Response(serializer.data)
+
+    def perform_update(self, serializer):
+        serializer.save()
+
+
+class HotelStaffViewSet(viewsets.ModelViewSet):
+    queryset = HotelStaff.objects.all()
+    serializer_class = HotelStaffSerializer
+
+    permission_classes = [permissions.IsAuthenticated,
+                          permissions.DjangoModelPermissions]
+
+    def get_queryset(self):
+        return HotelStaff.objects.filter(
+            department=self.request.user.department)
+
+
+class HotelAdminViewSet(viewsets.ModelViewSet):
+    queryset = HotelAdmin.objects.all()
+    serializer_class = HotelAdminSerializer
+
+    permission_classes = [permissions.IsAuthenticated,
+                          permissions.DjangoModelPermissions]
+
+    def get_queryset(self):
+        return HotelAdmin.objects.filter(
+            department=self.request.user.department)
