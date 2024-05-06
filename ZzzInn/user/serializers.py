@@ -3,7 +3,7 @@ from rest_framework.authtoken.models import Token
 
 from django.contrib.auth import authenticate
 
-from .models import User, Customer
+from .models import User, Customer, HotelStaff, HotelAdmin
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -104,9 +104,32 @@ class CustomerSerializer(serializers.ModelSerializer):
             user.set_password(password)
         user.save()
 
-        # به روز رسانی سایر فیلدهای مشتری
         instance.address = validated_data.get('address', instance.address)
-        # به همین شکل سایر فیلدها را به روز کنید
         instance.save()
 
         return instance
+
+
+class HotelStaffSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+
+    class Meta:
+        model = HotelStaff
+        fields = [
+            'user', 'address', 'role', 'working_hours',
+            'start_date', 'department', 'emergency_contact'
+        ]
+        read_only_fields = ['user']
+
+
+class HotelAdminSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+
+    class Meta:
+        model = HotelAdmin
+        fields = [
+            'user', 'department', 'start_date', 'can_approve_transactions',
+            'can_modify_policies', 'can_handle_complaints',
+            'biography', 'advanced_training_completed'
+        ]
+        read_only_fields = ['user']
