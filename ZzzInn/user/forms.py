@@ -1,7 +1,8 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
+from django.utils.translation import gettext_lazy as _
 
-from .models import Customer, User
+from .models import Customer, User, HotelStaff, HotelAdmin
 
 
 class UserRegistrationForm(UserCreationForm):
@@ -73,3 +74,23 @@ class CustomerProfileForm(forms.ModelForm):
             'preferences': forms.Textarea(attrs={'rows': 4}),
             'special_requests': forms.Textarea(attrs={'rows': 4}),
         }
+
+
+# class HotelStaffForm(forms.ModelForm):
+#     class Meta:
+#         model = HotelStaff
+#         fields = '__all__'
+#         labels = {
+#             'user': _("کارمند"),
+#             'address': _("آدرس"),
+#         }
+
+
+# class HotelAdminForm(forms.ModelForm):
+#     class Meta:
+#         model = HotelAdmin
+#         fields = '__all__'
+#         labels = {
+#             'user': _("مدیر"),
+#             'department': _("بخش"),
+#         }
