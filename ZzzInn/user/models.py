@@ -39,6 +39,7 @@ class CustomUserManager(BaseUserManager):
         # giving permission to super user
         user.is_active = True
         user.is_staff = True
+        user.is_admin = False
         user.is_superadmin = True
         user.save(using=self._db)
         return user
@@ -73,28 +74,6 @@ class User(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'full_name', 'phone_number']
     objects = CustomUserManager()
-
-    groups = models.ManyToManyField(
-        'auth.Group',
-        verbose_name=_('groups'),
-        blank=True,
-        help_text=_(
-            '''
-            گروه هایی که این کاربر به آنها تعلق دارد.
-            یک کاربر تمام مجوزهای اعطا
-            شده به هر یک از گروه های خود را دریافت می کند.
-            '''),
-        related_name="%(app_label)s_%(class)s_related",
-        related_query_name="%(app_label)s_%(class)ss",
-    )
-    user_permissions = models.ManyToManyField(
-        'auth.Permission',
-        verbose_name=_('user permissions'),
-        blank=True,
-        help_text=_('Specific permissions for this user.'),
-        related_name="%(app_label)s_%(class)s_related",
-        related_query_name="%(app_label)s_%(class)ss",
-    )
 
     def __str__(self):
         return self.full_name

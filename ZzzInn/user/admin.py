@@ -17,7 +17,6 @@ class UserAdmin(UserAdmin):
         (_('Personal info'), {'fields': ('full_name',)}),
         (_('Permissions'), {'fields': ('is_active', 'is_staff',
          'is_admin', 'is_superadmin', 'groups', 'user_permissions')}),
-        # حذف 'date_joined' از 'fieldsets' زیرا غیرقابل ویرایش است
         (_('Important dates'), {'fields': ('last_login',)}),
     )
     add_fieldsets = (
@@ -43,12 +42,6 @@ class UserAdmin(UserAdmin):
         obj.save()
 
     readonly_fields = ('last_login', 'date_joined',)
-
-    def has_add_permission(self, request, obj=None):
-        return False
-
-    def has_delete_permission(self, request, obj=None):
-        return False
 
 
 @admin.register(Customer)
